@@ -1,0 +1,4 @@
+adafruit/DHT sensor library @ ^1.4.4
+adafruit/RTClib @ ^2.0.3
+adafruit/Adafruit Unified Sensor @ ^1.1.5
+olikraus/U8g2@^2.32.13
