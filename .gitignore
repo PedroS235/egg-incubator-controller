@@ -35,3 +35,8 @@
 compile_commands.json
 .clang*
 compile_commands.py
+
+# platformio
+.pio
+
+.vscode
