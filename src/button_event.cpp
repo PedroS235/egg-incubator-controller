@@ -1,5 +1,7 @@
 #include "button_event.h"
 
+#include <Arduino.h>
+
 ButtonEvent::ButtonEvent(uint8_t upPin, uint8_t okPin, uint8_t downPin)
 {
     upBtn = upPin;

@@ -24,6 +24,12 @@ public:
      * Switches off the current relay
      */
     void switchOff();
+
+    /**
+     * @brief Performs a small test by turning on and off the relay!
+     * 
+     */
+    void test();
 };
 
 #endif // !RELAY_H

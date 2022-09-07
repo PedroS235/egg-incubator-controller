@@ -17,7 +17,8 @@
 #define OK_BTN 2
 #define DOWN_BTN 3
 
-class ButtonEvent {
+class ButtonEvent
+{
 private:
     uint8_t upBtn, okBtn, downBtn;
     unsigned long timer = 0;

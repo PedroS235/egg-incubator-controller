@@ -1,6 +1,6 @@
-#include "gui/display_controller.h"
+#include "display_controller.h"
 
-Display::Display(DHTSensor* _dht, RTC_DS3231* _timer, bool rotate_display)
+Display::Display(DHTSensor *_dht, RTC_DS3231 *_timer, bool rotate_display)
 {
     display.begin(BTN_OK_PIN, U8X8_PIN_NONE, U8X8_PIN_NONE, BTN_UP_PIN, BTN_DOWN_PIN);
     btn_event = new ButtonEvent(BTN_UP_PIN, BTN_OK_PIN, BTN_DOWN_PIN);
@@ -16,10 +16,14 @@ Display::Display(DHTSensor* _dht, RTC_DS3231* _timer, bool rotate_display)
 void Display::render(uint8_t screen)
 {
     display.firstPage();
-    do {
-        if (screen == 1) {
+    do
+    {
+        if (screen == 1)
+        {
             draw_menu(curr_menu);
-        } else if (screen == 2) {
+        }
+        else if (screen == 2)
+        {
             incubation_screen();
         }
         draw_curr_time();
@@ -31,9 +35,12 @@ void Display::draw_temperature_screen()
 {
     float temp = dht->get_temperature();
     float target;
-    if (curr_egg_stats == NULL) {
+    if (curr_egg_stats == NULL)
+    {
         target = -1.0;
-    } else {
+    }
+    else
+    {
         target = curr_egg_stats->temp_target;
     }
 
@@ -43,14 +50,17 @@ void Display::draw_temperature_screen()
 
     display.setFont(u8g2_font_7x14B_mf);
 
-    if (isnan(temp)) {
+    if (isnan(temp))
+    {
         display.print("Current: ");
         display.print("Error");
         display.setCursor(0, display.getCursorY() + display.getMaxCharHeight() + 5);
         display.print("Target: ");
         display.print(target);
         display.print(" °C");
-    } else {
+    }
+    else
+    {
         display.print("Current: ");
         display.print(temp);
         display.print(" °C");
@@ -65,9 +75,12 @@ void Display::draw_humidity_screen()
 {
     float humd = dht->get_humidity();
     float target;
-    if (curr_egg_stats == NULL) {
+    if (curr_egg_stats == NULL)
+    {
         target = -1.0;
-    } else {
+    }
+    else
+    {
         target = curr_egg_stats->humd_target;
     }
 
@@ -77,14 +90,17 @@ void Display::draw_humidity_screen()
 
     display.setFont(u8g2_font_7x14B_mf);
 
-    if (isnan(humd)) {
+    if (isnan(humd))
+    {
         display.print("Current: ");
         display.print("Error");
         display.setCursor(0, display.getCursorY() + display.getMaxCharHeight() + 5);
         display.print("Target: ");
         display.print(target);
         display.print(" %");
-    } else {
+    }
+    else
+    {
         display.print("Current: ");
         display.print(humd);
         display.print(" %");
@@ -95,15 +111,19 @@ void Display::draw_humidity_screen()
     }
 }
 
-void Display::draw_menu(menu_t* menu)
+void Display::draw_menu(menu_t *menu)
 {
     draw_title(menu->title, u8g2_font_7x14_mr);
     u8g2_uint_t y = display.getMaxCharHeight() + 5;
-    for (int i = 0; i < menu->nbr_items; i++) {
+    for (int i = 0; i < menu->nbr_items; i++)
+    {
         display.setCursor(0, y);
-        if (menu->selected == i) {
+        if (menu->selected == i)
+        {
             display.print("> ");
-        } else {
+        }
+        else
+        {
             display.print("  ");
         }
         display.println(menu->items[i]);
@@ -111,8 +131,8 @@ void Display::draw_menu(menu_t* menu)
     }
 }
 
-void Display::draw_scroll_string(char* string, uint8_t pos_y, uint8_t* font,
-    bool direction)
+void Display::draw_scroll_string(char *string, uint8_t pos_y, uint8_t *font,
+                                 bool direction)
 {
     display.setFont(font);
     u8g2_uint_t text_width = display.getUTF8Width(string);
@@ -122,7 +142,7 @@ void Display::draw_scroll_string(char* string, uint8_t pos_y, uint8_t* font,
         text_scroll_offset = display.getDisplayWidth();
 }
 
-void Display::draw_title(char* title, const uint8_t* font)
+void Display::draw_title(char *title, const uint8_t *font)
 {
 
     display.setFont(font);
@@ -130,12 +150,13 @@ void Display::draw_title(char* title, const uint8_t* font)
     display.print(title);
 
     display.drawLine(0, display.getMaxCharHeight() + 2, display.getDisplayWidth(),
-        display.getMaxCharHeight() + 2);
+                     display.getMaxCharHeight() + 2);
 }
 
 void Display::draw_stats_screen()
 {
-    if (curr_egg_stats != NULL) {
+    if (curr_egg_stats != NULL)
+    {
         draw_title("Estatisticas", u8g2_font_courR10_tr);
         u8g2_uint_t y = display.getMaxCharHeight() + 5;
         display.setFont(u8g2_font_t0_11_mf);
@@ -155,16 +176,21 @@ void Display::draw_stats_screen()
 
 void Display::incubation_screen()
 {
-    if (millis() - screen_switch_timer >= SCREEN_SWITCH_PERIOD) {
-        if (curr_screen == 2) {
+    if (millis() - screen_switch_timer >= SCREEN_SWITCH_PERIOD)
+    {
+        if (curr_screen == 2)
+        {
             curr_screen = 0;
-        } else {
+        }
+        else
+        {
             curr_screen++;
         }
         screen_switch_timer += SCREEN_SWITCH_PERIOD;
     }
 
-    switch (curr_screen) {
+    switch (curr_screen)
+    {
     case 0:
         draw_temperature_screen();
         break;
@@ -187,7 +213,7 @@ void Display::draw_curr_time()
     display.print(string_time);
 }
 
-void Display::set_egg_stats(egg_stats_t* stats)
+void Display::set_egg_stats(egg_stats_t *stats)
 {
     curr_egg_stats = stats;
 }
@@ -195,13 +221,16 @@ void Display::set_egg_stats(egg_stats_t* stats)
 uint8_t Display::get_menu_selection()
 {
     uint8_t event = btn_event->getEvent();
-    if (event == UP_BTN) {
+    if (event == UP_BTN)
+    {
         move_selected_item_up(curr_menu);
     }
-    if (event == OK_BTN) {
+    if (event == OK_BTN)
+    {
         return get_selected_item_index(curr_menu);
     }
-    if (event == DOWN_BTN) {
+    if (event == DOWN_BTN)
+    {
         move_selected_item_down(curr_menu);
     }
     return -1;
