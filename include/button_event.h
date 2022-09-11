@@ -17,8 +17,7 @@
 #define OK_BTN 2
 #define DOWN_BTN 3
 
-class ButtonEvent
-{
+class ButtonEvent {
 private:
     uint8_t upBtn, okBtn, downBtn;
     unsigned long timer = 0;
@@ -32,7 +31,7 @@ public:
      *  - okPin: GPIO pin where the ok button is connected.
      *  - downPin: GPIO pin where the down button is connected.
      */
-    ButtonEvent(uint8_t upPin, uint8_t okPin, uint8_t downPin);
+    ButtonEvent();
 
     /**
      * Returns the number of button pressed. If no button is pressed 0 is returned

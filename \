@@ -1,0 +1,19 @@
+#ifndef MENU_H
+#define MENU_H
+
+#include "Vector.h"
+#include "item.h"
+
+class Menu {
+private:
+    Vector<Item>* items;
+    int selected_index;
+
+public:
+    Menu();
+    void add_item(Item item);
+    void on_click();
+    const char* get_item_names();
+};
+
+#endif // !MENU_H

@@ -1,15 +1,13 @@
 #include "button_event.h"
 
+#include "config/configuration.h"
 #include <Arduino.h>
 
-ButtonEvent::ButtonEvent(uint8_t upPin, uint8_t okPin, uint8_t downPin)
+ButtonEvent::ButtonEvent()
 {
-    upBtn = upPin;
-    okBtn = okPin;
-    downBtn = downPin;
-    pinMode(upPin, INPUT);
-    pinMode(okPin, INPUT);
-    pinMode(downPin, INPUT);
+    pinMode(BTN_UP_PIN, INPUT);
+    pinMode(BTN_OK_PIN, INPUT);
+    pinMode(BTN_DOWN_PIN, INPUT);
     interval = 200;
 }
 
@@ -17,15 +15,13 @@ int ButtonEvent::getEvent()
 {
     if (millis() - timer > interval) {
         timer += interval;
-        if (digitalRead(upBtn) == HIGH) {
+        if (digitalRead(BTN_UP_PIN) == HIGH) {
             return UP_BTN;
-        } else if (digitalRead(okBtn) == HIGH) {
+        } else if (digitalRead(BTN_OK_PIN) == HIGH) {
             return OK_BTN;
-        } else if (digitalRead(downBtn) == HIGH) {
+        } else if (digitalRead(BTN_DOWN_PIN) == HIGH) {
             return DOWN_BTN;
-        } else {
-            return 0;
         }
     }
-    return -1;
+    return 0;
 }

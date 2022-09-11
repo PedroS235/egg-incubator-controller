@@ -1,54 +1,41 @@
-// ---------------------
-// | Start of includes |
-// ---------------------
-
+// #include "config/menus.h"
+#include "config/menus.h"
+#include "screen/display.h"
 #include <Arduino.h>
-#include <RTClib.h>
-#include <stdint.h>
 
-//---------------------
+// void default_function()
+// {
+//     Serial.println("Hello world");
+// }
 
-#include "button_event.h"
-#include "relay.h"
-
-// -------------------
-// | End of includes |
-// -------------------
-
-// -----------------------------------------------------------------------------------------------------
-
-RTC_DS3231 *timer;
-Relay *heater;
-Relay *motor;
-
-void timer_setup()
-{
-    if (!timer->begin())
-    {
-        if (!timer->begin())
-        {
-            Serial.println("[ERROR] - Couldn't find RTC");
-            Serial.flush();
-            while (1)
-                delay(10);
-        }
-    }
-
-    if (timer->lostPower())
-    {
-        Serial.println("[INFO] - RTC lost power, let's set the time!");
-        timer->adjust(DateTime(F(__DATE__), F(__TIME__)));
-    }
-}
+Display* display;
 
 void setup()
 {
-    // - Giving time to initialize
-    delay(2000);
+    // - Giving time to initialize board
+    delay(1000);
+    Serial.begin(115200);
+    display = new Display();
+    setup_menus();
 
-    // - Begining Tests
+    // Menu* main_menu = new Menu(3);
+    // main_menu->add_item(Item("Start Incubation", default_function));
+    // main_menu->add_item(Item("Settings", default_function));
+    // main_menu->add_item(Item("Self Test", default_function));
+
+    display->begin();
+    display->draw_menu(main_menu);
+    delay(1000);
+    display->draw_menu(incubation_menu);
+    delay(1000);
+    display->draw_menu(settings_menu);
+    delay(1000);
+    display->draw_menu(incubation_settings_menu);
+    delay(1000);
+    display->draw_menu(egg_config_menu);
 }
 
 void loop()
 {
+    //
 }
