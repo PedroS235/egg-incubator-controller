@@ -64,6 +64,8 @@ void Display::draw_menu(Menu menu)
                 display.drawLine(0, y, width, y);
                 display.drawLine(0, y + y_offset + 1, width, y + y_offset + 1);
             }
+            display.println(menu.get_item_name_at(i));
+            y += y_offset + 2;
         }
     } while (display.nextPage());
 }

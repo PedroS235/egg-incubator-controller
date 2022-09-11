@@ -32,12 +32,24 @@ const char* Menu::get_item_name_at(int index)
 
 void Menu::set_selected_index(int index)
 {
-    selected_index = index;
+    index >= length || index < 0 ? selected_index : selected_index = index;
+}
+
+void Menu::move_down()
+{
+
+    if (selected_index < length - 1)
+        selected_index++;
+}
+
+void Menu::move_up()
+{
+    if (selected_index >= 1)
+        selected_index--;
 }
 
 void Menu::print_menu()
 {
-    Serial.println("Printing menu...");
     for (int i = 0; i < length; i++) {
         selected_index == i ? Serial.print(">") : Serial.print("");
         Serial.println(items[i].get_item_name());

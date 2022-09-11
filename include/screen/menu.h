@@ -18,6 +18,8 @@ public:
     const char* get_item_name_at(int index);
     void print_menu();
     void set_selected_index(int index);
+    void move_up();
+    void move_down();
 };
 
 #endif // !MENU_H
