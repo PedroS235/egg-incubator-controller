@@ -21,6 +21,9 @@
 // - DHT sensor
 #define DHT_PIN 32
 
+// - Buzzer
+#define BUZZER_PIN 2
+
 // ----------------------------------
 // -          SENSOR TYPES          -
 // ----------------------------------
@@ -44,5 +47,12 @@
 
 #define SCREEN_SWITCH_PERIOD 5000
 #define ROTATE_DISPLAY 1
+
+// ----------------------------------
+// -       HOLT WINTER FACTORS      -
+// ----------------------------------
+
+#define HWdata_factor 0.5
+#define HWtrend_factor 0.5
 
 #endif // !CONFIGURATION_H

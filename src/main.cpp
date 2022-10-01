@@ -1,17 +1,25 @@
-// #include "config/menus.h"
 #include "button_event.h"
+#include "config/configuration.h"
+#include "config/egg_config.h"
 #include "config/menus.h"
+#include "eeprom_manager.h"
+#include "modules/buzzer.h"
 #include "screen/display.h"
 #include <Arduino.h>
-
-// void default_function()
-// {
-//     Serial.println("Hello world");
-// }
+#include <DHT.h>
+#include <EEPROM.h>
 
 Display* display;
 Menu* current_menu;
-ButtonEvent* btn;
+ButtonEvent* btn_event;
+DHT dht_sensor(DHT_PIN, DHT_TYPE);
+
+float Ttarget;
+float Htarget;
+float TOFFSET = 0;
+float HOFFSET = 0;
+egg_t* incubating_egg;
+bool incubation_started = false;
 
 void setup()
 {
@@ -19,26 +27,41 @@ void setup()
     delay(1000);
     Serial.begin(115200);
     display = new Display();
-    btn = new ButtonEvent();
+    if (!display->begin()) {
+        error_beep();
+    }
+    display->draw_start_screen();
+    start_melody();
+    delay(2000);
+    display->draw_error("FAN ERROR");
+    delay(2000);
+
+    btn_event = new ButtonEvent();
+    dht_sensor.begin();
+    EEPROM.begin(1000);
 
     setup_menus();
 
-    display->begin();
     current_menu = &main_menu;
     display->draw_menu(*current_menu);
 }
 
-void loop()
+void menu_navigation()
 {
-    int b = btn->getEvent();
-    if (b == OK_BTN) {
+    int key_pressed = btn_event->getEvent();
+    if (key_pressed == OK_BTN) {
         current_menu->on_click();
     }
-    if (b == UP_BTN) {
+    if (key_pressed == UP_BTN) {
         current_menu->move_up();
     }
-    if (b == DOWN_BTN) {
+    if (key_pressed == DOWN_BTN) {
         current_menu->move_down();
     }
+}
+
+void loop()
+{
+    menu_navigation();
     display->draw_menu(*current_menu);
 }

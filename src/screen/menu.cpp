@@ -1,7 +1,6 @@
 
 #include "screen/menu.h"
-#include <Arduino.h>
-#include <cstdlib>
+#include "stdlib.h"
 
 Menu::Menu(int nbr_of_items)
 {
@@ -46,12 +45,4 @@ void Menu::move_up()
 {
     if (selected_index >= 1)
         selected_index--;
-}
-
-void Menu::print_menu()
-{
-    for (int i = 0; i < length; i++) {
-        selected_index == i ? Serial.print(">") : Serial.print("");
-        Serial.println(items[i].get_item_name());
-    }
 }

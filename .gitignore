@@ -41,3 +41,4 @@ compile_commands.py
 .pio
 
 .vscode
+.cache

@@ -7,6 +7,7 @@
 extern Menu main_menu;
 extern Menu incubation_menu;
 extern Menu settings_menu;
+extern Menu egg_config_settings_menu;
 extern Menu incubation_settings_menu;
 extern Menu egg_config_menu;
 
@@ -28,10 +29,15 @@ void incubation_menu_item7_function();
 void settings_menu_item1_function();
 void settings_menu_item2_function();
 void settings_menu_item3_function();
-void settings_menu_item4_function();
-void settings_menu_item5_function();
-void settings_menu_item6_function();
-void settings_menu_item7_function();
+
+// - egg_config_settings menu functions
+void egg_config_settings_menu_item1_function();
+void egg_config_settings_menu_item2_function();
+void egg_config_settings_menu_item3_function();
+void egg_config_settings_menu_item4_function();
+void egg_config_settings_menu_item5_function();
+void egg_config_settings_menu_item6_function();
+void egg_config_settings_menu_item7_function();
 
 // - incubation settings menu functions
 void incubation_settings_menu_item1_function();

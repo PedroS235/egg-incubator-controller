@@ -21,7 +21,7 @@ class ButtonEvent {
 private:
     uint8_t upBtn, okBtn, downBtn;
     unsigned long timer = 0;
-    unsigned long interval = 1000;
+    unsigned long interval = 250;
 
 public:
     /**
