@@ -9,16 +9,12 @@
 #include <DHT.h>
 #include <EEPROM.h>
 
-Display* display;
-Menu* current_menu;
-ButtonEvent* btn_event;
+Display *display;
+Menu *current_menu;
+ButtonEvent *btn_event;
 DHT dht_sensor(DHT_PIN, DHT_TYPE);
 
-float Ttarget;
-float Htarget;
-float TOFFSET = 0;
-float HOFFSET = 0;
-egg_t* incubating_egg;
+egg_t *incubating_egg;
 bool incubation_started = false;
 
 void setup()
@@ -27,7 +23,8 @@ void setup()
     delay(1000);
     Serial.begin(115200);
     display = new Display();
-    if (!display->begin()) {
+    if (!display->begin())
+    {
         error_beep();
     }
     display->draw_start_screen();
@@ -49,13 +46,16 @@ void setup()
 void menu_navigation()
 {
     int key_pressed = btn_event->getEvent();
-    if (key_pressed == OK_BTN) {
+    if (key_pressed == OK_BTN)
+    {
         current_menu->on_click();
     }
-    if (key_pressed == UP_BTN) {
+    if (key_pressed == UP_BTN)
+    {
         current_menu->move_up();
     }
-    if (key_pressed == DOWN_BTN) {
+    if (key_pressed == DOWN_BTN)
+    {
         current_menu->move_down();
     }
 }
