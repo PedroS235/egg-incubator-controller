@@ -5,14 +5,14 @@
 // -              PINS              -
 // ----------------------------------
 
-#define BTN_UP_PIN 14 // - Menu up
-#define BTN_OK_PIN 27 // - Menu ok
+#define BTN_UP_PIN 14   // - Menu up
+#define BTN_OK_PIN 27   // - Menu ok
 #define BTN_DOWN_PIN 26 // - Menu down
 
 #define HEATER_PIN 19
 #define MOTOR_PIN 23
-//#define FAN_PIN
-//#define SERVO_PIN
+// #define FAN_PIN
+// #define SERVO_PIN
 
 // - I2C Pins
 #define I2C_SDA_PIN 21
@@ -38,8 +38,8 @@
 
 // - Motor rotation duration (in seconds)
 #define MOTOR_ROTATION_DURATION 7
-// - Motor rotation period (in hours)
-#define MOTOR_ROTATION_PERIOD 2
+// - Motor rotation period [year, month, day, hour, minute second]
+#define MOTOR_ROTATION_PERIOD DateTime(0, 0, 0, 2, 0, 0)
 
 // ----------------------------------
 // -        GUI CONFIGURATION       -
@@ -49,10 +49,18 @@
 #define ROTATE_DISPLAY 1
 
 // ----------------------------------
-// -       HOLT WINTER FACTORS      -
+// -               PID              -
 // ----------------------------------
 
-#define HWdata_factor 0.5
-#define HWtrend_factor 0.5
+#define KP 0.2 // Proportional value
+#define KI 0.1 // Integral value
+#define KD 0.1 // Derivative value
+
+// ----------------------------------
+// -              STATES            -
+// ----------------------------------
+#define IDLE_STATE 0
+#define IN_INCUBATION_STATE 1
+#define END_OF_INBUCATION_STATE 2
 
 #endif // !CONFIGURATION_H

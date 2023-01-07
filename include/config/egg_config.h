@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-typedef struct egg {
+typedef struct egg
+{
     uint8_t egg_type;
     uint8_t incubation_period;
     uint8_t rotation_period;
@@ -13,12 +14,12 @@ typedef struct egg {
     uint8_t end_motor_rot;
 } egg_t;
 
-extern const egg_t chicken_egg; // galinha
-extern const egg_t quail_egg; // coderniz
-extern const egg_t duck_egg; // pato
-extern const egg_t turkey_egg; // peru
-extern const egg_t goose_egg; // ganso
-extern const egg_t pigeon_egg; // pomba
+extern egg_t chicken_egg; // galinha
+extern egg_t quail_egg;   // coderniz
+extern egg_t duck_egg;    // pato
+extern egg_t turkey_egg;  // peru
+extern egg_t goose_egg;   // ganso
+extern egg_t pigeon_egg;  // pomba
 
 void print_egg_config(egg_t egg_config);
 

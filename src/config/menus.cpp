@@ -7,8 +7,10 @@
 #include "screen/display.h"
 #include <Arduino.h>
 
-extern Display* display;
-extern Menu* current_menu;
+extern Display *display;
+extern Menu *current_menu;
+extern egg_t *incubating_egg;
+extern bool start_incubation;
 int changing_egg_settings = 0;
 
 Menu main_menu(3);
@@ -20,9 +22,10 @@ Menu egg_config_menu(7);
 
 void setup_menus()
 {
-    main_menu.add_item(Item("Start Incubation", main_menu_item1_function));
-    main_menu.add_item(Item("Settings", main_menu_item2_function));
-    main_menu.add_item(Item("Self Test", main_menu_item3_function));
+    main_menu.add_item(Item("Go Back", main_menu_item1_function));
+    main_menu.add_item(Item("Start Incubation", main_menu_item2_function));
+    main_menu.add_item(Item("Settings", main_menu_item3_function));
+    main_menu.add_item(Item("Self Test", main_menu_item4_function));
 
     incubation_menu.add_item(Item("Go Back", incubation_menu_item1_function));
     incubation_menu.add_item(Item("Chicken Incubation", incubation_menu_item2_function));
@@ -60,15 +63,21 @@ void setup_menus()
 // - main menu functions
 void main_menu_item1_function()
 {
+    current_menu = NULL;
+}
+
+void main_menu_item2_function()
+{
     display->draw_menu(incubation_menu);
     current_menu = &incubation_menu;
 }
-void main_menu_item2_function()
+
+void main_menu_item3_function()
 {
     display->draw_menu(settings_menu);
     current_menu = &settings_menu;
 }
-void main_menu_item3_function()
+void main_menu_item4_function()
 {
     // - start testing and then go back to main menu
 }
@@ -79,12 +88,15 @@ void incubation_menu_item1_function()
     display->draw_menu(main_menu);
     current_menu = &main_menu;
 }
-void incubation_menu_item2_function() { }
-void incubation_menu_item3_function() { }
-void incubation_menu_item4_function() { }
-void incubation_menu_item5_function() { }
-void incubation_menu_item6_function() { }
-void incubation_menu_item7_function() { }
+void incubation_menu_item2_function()
+{
+    incubating_egg = &chicken_egg;
+}
+void incubation_menu_item3_function() {}
+void incubation_menu_item4_function() {}
+void incubation_menu_item5_function() {}
+void incubation_menu_item6_function() {}
+void incubation_menu_item7_function() {}
 
 // - settings menus functions
 void settings_menu_item1_function()
@@ -152,100 +164,144 @@ void incubation_settings_menu_item1_function()
 }
 void incubation_settings_menu_item2_function()
 {
-    extern float Ttarget;
-    display->draw_page("Target Temperature", Ttarget, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    extern float tempTarget;
+    display->draw_page("Target Temperature", tempTarget, 0);
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
     bool change_value_small = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 change_value_big = true;
-            } else if (change_value_big && !change_value_small) {
+            }
+            else if (change_value_big && !change_value_small)
+            {
                 change_value_big = false;
                 change_value_small = true;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 change_value_small = false;
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 current_menu = &incubation_settings_menu;
                 display->draw_menu(incubation_settings_menu);
                 break;
-            } else if (change_value_big && !change_value_small) {
-                Ttarget++;
-            } else if (!change_value_big && change_value_small) {
-                Ttarget += 0.1;
+            }
+            else if (change_value_big && !change_value_small)
+            {
+                tempTarget++;
+            }
+            else if (!change_value_big && change_value_small)
+            {
+                tempTarget += 0.1;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big && !change_value_small) {
-                Ttarget--;
-            } else if (!change_value_big && change_value_small) {
-                Ttarget -= 0.1;
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big && !change_value_small)
+            {
+                tempTarget--;
+            }
+            else if (!change_value_big && change_value_small)
+            {
+                tempTarget -= 0.1;
             }
         }
 
-        if (change_value_big) {
-            display->draw_page("Target Temperature", Ttarget, 1);
-        } else if (change_value_small) {
-            display->draw_page("Target Temperature", Ttarget, 2);
-        } else {
-            display->draw_page("Target Temperature", Ttarget, 0);
+        if (change_value_big)
+        {
+            display->draw_page("Target Temperature", tempTarget, 1);
+        }
+        else if (change_value_small)
+        {
+            display->draw_page("Target Temperature", tempTarget, 2);
+        }
+        else
+        {
+            display->draw_page("Target Temperature", tempTarget, 0);
         }
     }
 }
 
 void incubation_settings_menu_item3_function()
 {
-    extern float Htarget;
-    display->draw_page("Target Humidity", Htarget, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    extern float humdTarget;
+    display->draw_page("Target Humidity", humdTarget, 0);
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
     bool change_value_small = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 change_value_big = true;
-            } else if (change_value_big && !change_value_small) {
+            }
+            else if (change_value_big && !change_value_small)
+            {
                 change_value_big = false;
                 change_value_small = true;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 change_value_small = false;
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 current_menu = &incubation_settings_menu;
                 display->draw_menu(incubation_settings_menu);
                 break;
-            } else if (change_value_big && !change_value_small) {
-                Htarget++;
-            } else if (!change_value_big && change_value_small) {
-                Htarget += 0.1;
+            }
+            else if (change_value_big && !change_value_small)
+            {
+                humdTarget++;
+            }
+            else if (!change_value_big && change_value_small)
+            {
+                humdTarget += 0.1;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big && !change_value_small) {
-                Htarget--;
-            } else if (!change_value_big && change_value_small) {
-                Htarget -= 0.1;
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big && !change_value_small)
+            {
+                humdTarget--;
+            }
+            else if (!change_value_big && change_value_small)
+            {
+                humdTarget -= 0.1;
             }
         }
 
-        if (change_value_big) {
-            display->draw_page("Target Humidity", Htarget, 1);
-        } else if (change_value_small) {
-            display->draw_page("Target Humidity", Htarget, 2);
-        } else {
-            display->draw_page("Target Humidity", Htarget, 0);
+        if (change_value_big)
+        {
+            display->draw_page("Target Humidity", humdTarget, 1);
+        }
+        else if (change_value_small)
+        {
+            display->draw_page("Target Humidity", humdTarget, 2);
+        }
+        else
+        {
+            display->draw_page("Target Humidity", humdTarget, 0);
         }
     }
 }
@@ -261,9 +317,10 @@ void egg_config_menu_item1_function()
 void egg_config_menu_item2_function()
 {
     uint8_t value;
-    egg_t* ptr = (egg_t*)malloc(sizeof(egg_t));
+    egg_t *ptr = (egg_t *)malloc(sizeof(egg_t));
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         read_egg_struct(CHICKEN_EGG_CONFIG_ADDR, ptr);
         break;
@@ -287,44 +344,59 @@ void egg_config_menu_item2_function()
     value = ptr->incubation_period;
 
     display->draw_page("Incubation Period", value, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
+        if (btn_value == OK_BTN)
+        {
 
-            if (!change_value_big) {
+            if (!change_value_big)
+            {
                 change_value_big = true;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big)
+            {
                 current_menu = &egg_config_menu;
                 display->draw_menu(egg_config_menu);
                 break;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 value++;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big) {
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big)
+            {
                 value--;
             }
         }
 
-        if (change_value_big) {
+        if (change_value_big)
+        {
             display->draw_page("Incubation Days", value, 1);
-        } else {
+        }
+        else
+        {
             display->draw_page("Incubation Days", value, 0);
         }
     }
 
     ptr->incubation_period = value;
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         write_egg_struct(CHICKEN_EGG_CONFIG_ADDR, *ptr);
         break;
@@ -351,9 +423,10 @@ void egg_config_menu_item3_function()
 {
 
     float value;
-    egg_t* ptr = (egg_t*)malloc(sizeof(egg_t));
+    egg_t *ptr = (egg_t *)malloc(sizeof(egg_t));
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         read_egg_struct(CHICKEN_EGG_CONFIG_ADDR, ptr);
         break;
@@ -377,54 +450,77 @@ void egg_config_menu_item3_function()
     value = ptr->temp_target;
 
     display->draw_page("Target Temperature", value, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
     bool change_value_small = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 change_value_big = true;
-            } else if (change_value_big && !change_value_small) {
+            }
+            else if (change_value_big && !change_value_small)
+            {
                 change_value_big = false;
                 change_value_small = true;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 change_value_small = false;
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 current_menu = &egg_config_menu;
                 display->draw_menu(egg_config_menu);
                 break;
-            } else if (change_value_big && !change_value_small) {
+            }
+            else if (change_value_big && !change_value_small)
+            {
                 value++;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 value += 0.1;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big && !change_value_small) {
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big && !change_value_small)
+            {
                 value--;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 value -= 0.1;
             }
         }
 
-        if (change_value_big) {
+        if (change_value_big)
+        {
             display->draw_page("Target Temperature", value, 1);
-        } else if (change_value_small) {
+        }
+        else if (change_value_small)
+        {
             display->draw_page("Target Temperature", value, 2);
-        } else {
+        }
+        else
+        {
             display->draw_page("Target Temperature", value, 0);
         }
     }
 
     ptr->temp_target = value;
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         write_egg_struct(CHICKEN_EGG_CONFIG_ADDR, *ptr);
         break;
@@ -451,9 +547,10 @@ void egg_config_menu_item4_function()
 {
 
     float value;
-    egg_t* ptr = (egg_t*)malloc(sizeof(egg_t));
+    egg_t *ptr = (egg_t *)malloc(sizeof(egg_t));
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         read_egg_struct(CHICKEN_EGG_CONFIG_ADDR, ptr);
         break;
@@ -477,54 +574,77 @@ void egg_config_menu_item4_function()
     value = ptr->humd_target;
 
     display->draw_page("Target Humidity", value, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
     bool change_value_small = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 change_value_big = true;
-            } else if (change_value_big && !change_value_small) {
+            }
+            else if (change_value_big && !change_value_small)
+            {
                 change_value_big = false;
                 change_value_small = true;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 change_value_small = false;
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big && !change_value_small) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big && !change_value_small)
+            {
                 current_menu = &egg_config_menu;
                 display->draw_menu(egg_config_menu);
                 break;
-            } else if (change_value_big && !change_value_small) {
+            }
+            else if (change_value_big && !change_value_small)
+            {
                 value++;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 value += 0.1;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big && !change_value_small) {
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big && !change_value_small)
+            {
                 value--;
-            } else if (!change_value_big && change_value_small) {
+            }
+            else if (!change_value_big && change_value_small)
+            {
                 value -= 0.1;
             }
         }
 
-        if (change_value_big) {
+        if (change_value_big)
+        {
             display->draw_page("Target Humidity", value, 1);
-        } else if (change_value_small) {
+        }
+        else if (change_value_small)
+        {
             display->draw_page("Target Humidity", value, 2);
-        } else {
+        }
+        else
+        {
             display->draw_page("Target Humidity", value, 0);
         }
     }
 
     ptr->humd_target = value;
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         write_egg_struct(CHICKEN_EGG_CONFIG_ADDR, *ptr);
         break;
@@ -550,9 +670,10 @@ void egg_config_menu_item4_function()
 void egg_config_menu_item5_function()
 {
     uint8_t value;
-    egg_t* ptr = (egg_t*)malloc(sizeof(egg_t));
+    egg_t *ptr = (egg_t *)malloc(sizeof(egg_t));
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         read_egg_struct(CHICKEN_EGG_CONFIG_ADDR, ptr);
         break;
@@ -576,43 +697,58 @@ void egg_config_menu_item5_function()
     value = ptr->rotation_period;
 
     display->draw_page("Rotation Period", value, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big)
+            {
                 change_value_big = true;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big)
+            {
                 current_menu = &egg_config_menu;
                 display->draw_menu(egg_config_menu);
                 break;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 value++;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big) {
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big)
+            {
                 value--;
             }
         }
 
-        if (change_value_big) {
+        if (change_value_big)
+        {
             display->draw_page("Rotation Period", value, 1);
-        } else {
+        }
+        else
+        {
             display->draw_page("Rotation Period", value, 0);
         }
     }
 
     ptr->rotation_period = value;
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         write_egg_struct(CHICKEN_EGG_CONFIG_ADDR, *ptr);
         break;
@@ -638,9 +774,10 @@ void egg_config_menu_item5_function()
 void egg_config_menu_item6_function()
 {
     uint8_t value;
-    egg_t* ptr = (egg_t*)malloc(sizeof(egg_t));
+    egg_t *ptr = (egg_t *)malloc(sizeof(egg_t));
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         read_egg_struct(CHICKEN_EGG_CONFIG_ADDR, ptr);
         break;
@@ -664,43 +801,58 @@ void egg_config_menu_item6_function()
     value = ptr->start_motor_rot;
 
     display->draw_page("Start Rotation", value, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big)
+            {
                 change_value_big = true;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big)
+            {
                 current_menu = &egg_config_menu;
                 display->draw_menu(egg_config_menu);
                 break;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 value++;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big) {
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big)
+            {
                 value--;
             }
         }
 
-        if (change_value_big) {
+        if (change_value_big)
+        {
             display->draw_page("Start Rotation", value, 1);
-        } else {
+        }
+        else
+        {
             display->draw_page("Start Rotation", value, 0);
         }
     }
 
     ptr->start_motor_rot = value;
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         write_egg_struct(CHICKEN_EGG_CONFIG_ADDR, *ptr);
         break;
@@ -726,9 +878,10 @@ void egg_config_menu_item6_function()
 void egg_config_menu_item7_function()
 {
     uint8_t value;
-    egg_t* ptr = (egg_t*)malloc(sizeof(egg_t));
+    egg_t *ptr = (egg_t *)malloc(sizeof(egg_t));
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         read_egg_struct(CHICKEN_EGG_CONFIG_ADDR, ptr);
         break;
@@ -752,43 +905,58 @@ void egg_config_menu_item7_function()
     value = ptr->end_motor_rot;
 
     display->draw_page("End Rotation", value, 0);
-    ButtonEvent* btn_event = new ButtonEvent();
+    ButtonEvent *btn_event = new ButtonEvent();
     bool change_value_big = false;
-    while (true) {
+    while (true)
+    {
 
         int btn_value = btn_event->getEvent();
-        if (btn_value == OK_BTN) {
-            if (!change_value_big) {
+        if (btn_value == OK_BTN)
+        {
+            if (!change_value_big)
+            {
                 change_value_big = true;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 change_value_big = false;
             }
         }
-        if (btn_value == UP_BTN) {
-            if (!change_value_big) {
+        if (btn_value == UP_BTN)
+        {
+            if (!change_value_big)
+            {
                 current_menu = &egg_config_menu;
                 display->draw_menu(egg_config_menu);
                 break;
-            } else if (change_value_big) {
+            }
+            else if (change_value_big)
+            {
                 value++;
             }
         }
-        if (btn_value == DOWN_BTN) {
-            if (change_value_big) {
+        if (btn_value == DOWN_BTN)
+        {
+            if (change_value_big)
+            {
                 value--;
             }
         }
 
-        if (change_value_big) {
+        if (change_value_big)
+        {
             display->draw_page("End Rotation", value, 1);
-        } else {
+        }
+        else
+        {
             display->draw_page("End Rotation", value, 0);
         }
     }
 
     ptr->end_motor_rot = value;
 
-    switch (changing_egg_settings) {
+    switch (changing_egg_settings)
+    {
     case 1:
         write_egg_struct(CHICKEN_EGG_CONFIG_ADDR, *ptr);
         break;

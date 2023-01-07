@@ -15,6 +15,7 @@ extern Menu egg_config_menu;
 void main_menu_item1_function();
 void main_menu_item2_function();
 void main_menu_item3_function();
+void main_menu_item4_function();
 
 // - incubation menu functions
 void incubation_menu_item1_function();

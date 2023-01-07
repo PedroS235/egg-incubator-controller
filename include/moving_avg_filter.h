@@ -1,7 +1,7 @@
 #ifndef MOVING_AVG_FILTER
 #define MOVING_AVG_FILTER
 
-#define SIZE 10
+#define SIZE 20
 
 class MovingAvgFilter
 {
