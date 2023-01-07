@@ -1,6 +1,10 @@
 #ifndef PID_CONTROLLER
 #define PID_CONTROLLER
 
+/**
+ * @brief PID controller class.
+ *
+ */
 class PidController
 {
 private:
@@ -9,7 +13,7 @@ private:
 
 public:
     /**
-     * @brief Construct a new Pid Controller object
+     * @brief Construct a new PID Controller object
      *
      * @param kp_: Proportional value
      * @param ki_: Integral value
@@ -18,7 +22,7 @@ public:
     PidController(float kp_, float ki_, float kd_);
 
     /**
-     * @brief Retrives the correction to be made to the current value
+     * @brief Computes the new correction to the setpoint
      *
      * @param setpoint: Target value
      * @param current_value: Current value where to apply the PID

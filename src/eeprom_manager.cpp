@@ -3,33 +3,34 @@
 #include "config/egg_config.h"
 #include <EEPROM.h>
 
-void write_egg_struct(int address, egg_t egg_config)
+void write_egg_struct(int address, egg_t src)
 {
     Serial.print("Writing to address 0x");
     Serial.println(address);
     int curr_address = address;
-    EEPROM.writeUChar(curr_address, egg_config.egg_type);
+    EEPROM.writeUChar(curr_address, src.egg_type);
     curr_address += sizeof(char);
-    EEPROM.writeUChar(curr_address, egg_config.incubation_period);
+    EEPROM.writeUChar(curr_address, src.incubation_period);
     curr_address += sizeof(char);
-    EEPROM.writeUChar(curr_address, egg_config.rotation_period);
+    EEPROM.writeUChar(curr_address, src.rotation_period);
     curr_address += sizeof(char);
-    EEPROM.writeFloat(curr_address, egg_config.temp_target);
+    EEPROM.writeFloat(curr_address, src.temp_target);
     curr_address += sizeof(float);
-    EEPROM.writeFloat(curr_address, egg_config.humd_target);
+    EEPROM.writeFloat(curr_address, src.humd_target);
     curr_address += sizeof(float);
-    EEPROM.writeUChar(curr_address, egg_config.start_motor_rot);
+    EEPROM.writeUChar(curr_address, src.start_motor_rot);
     curr_address += sizeof(char);
-    EEPROM.writeUChar(curr_address, egg_config.end_motor_rot);
+    EEPROM.writeUChar(curr_address, src.end_motor_rot);
     EEPROM.commit();
 }
 
-void read_egg_struct(int address, egg_t* dest)
+void read_egg_struct(int address, egg_t *dest)
 {
     Serial.print("Reading to address 0x");
     Serial.println(address);
     int curr_address = address;
-    if (dest != NULL) {
+    if (dest != NULL)
+    {
         dest->egg_type = EEPROM.readChar(curr_address);
         curr_address += sizeof(char);
         dest->incubation_period = EEPROM.readChar(curr_address);

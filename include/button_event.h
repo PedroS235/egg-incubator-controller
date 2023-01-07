@@ -17,7 +17,14 @@
 #define OK_BTN 2
 #define DOWN_BTN 3
 
-class ButtonEvent {
+/**
+ * @brief Simple class for a button press event
+ *
+ * It has an internal timer that prevents a button to be pressed rapidly when
+ * pressing the button for long periods of time.
+ */
+class ButtonEvent
+{
 private:
     uint8_t upBtn, okBtn, downBtn;
     unsigned long timer = 0;
@@ -25,19 +32,16 @@ private:
 
 public:
     /**
-     * This class allows to check if a button was pressed.
-     * @params:
-     *  - upPin: GPIO pin where the up button is connected.
-     *  - okPin: GPIO pin where the ok button is connected.
-     *  - downPin: GPIO pin where the down button is connected.
+     * Construct a new ButtonEvent object
      */
     ButtonEvent();
 
     /**
-     * Returns the number of button pressed. If no button is pressed 0 is returned
+     * @brief This method checks for any button event
+     *
+     * @return Button pressed. Returns 0 if no button was pressed
      */
     int getEvent();
-    int getBtn();
 };
 
 #endif /* BUTTONEVENT_H */

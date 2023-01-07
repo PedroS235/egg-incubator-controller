@@ -1,24 +1,38 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+/*This is the configuration file!
+This is the only place that requires changes if any.
+In case you have connected the different components to different pins
+then update the pin number accordingly
+*/
+
 // ----------------------------------
-// -              PINS              -
+// -           GPIO PINS            -
 // ----------------------------------
 
-#define BTN_UP_PIN 14   // - Menu up
-#define BTN_OK_PIN 27   // - Menu ok
-#define BTN_DOWN_PIN 26 // - Menu down
+// GPIO pin for the UP button
+#define BTN_UP_PIN 14
+// GPIO pin for the OK button
+#define BTN_OK_PIN 27
+// GPIO pin for the DOWN button
+#define BTN_DOWN_PIN 26
 
+// GPIO pin for HEATER relay
 #define HEATER_PIN 19
+// GPIO pin for MOTOR relay
 #define MOTOR_PIN 23
+// GPIO pin for FAN
 // #define FAN_PIN
+// GPIO pin for SERVO
 // #define SERVO_PIN
 
-// - I2C Pins
+// - I2C GPIO Pins
+// These pins should not be changed!
 #define I2C_SDA_PIN 21
 #define I2C_SCK_PIN 22
 
-// - DHT sensor
+// GPIO pin for DHT temperatue/humidity sensor
 #define DHT_PIN 32
 
 // - Buzzer

@@ -3,6 +3,10 @@
 
 #define SIZE 20
 
+/**
+ * @brief Simple class that can be used to filter a range of values over time.
+ *
+ */
 class MovingAvgFilter
 {
 private:
